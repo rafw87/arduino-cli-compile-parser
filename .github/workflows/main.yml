@@ -1,0 +1,28 @@
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Example job to parse Arduino CLI compile log
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Normal example
+        id: normal
+#        uses: rafw87/arduino-cli-compile-parser@v1
+        uses: ./
+        with:
+          compile-log: "Sketch uses 30362 bytes (94%) of program storage space. Maximum is 32256 bytes. Global variables use 1188 bytes (58%) of dynamic memory, leaving 860 bytes for local variables. Maximum is 2048 bytes."
+          progmem-percentage-treshold: "95"
+          ram-percentage-treshold: "75"
+
+      - name: Regenerate compile output using outputs
+        run: |
+          echo "The time was ${{ steps.normal.outputs.time }}"
+          echo "Sketch uses ${{ steps.normal.outputs.progmem-bytes }} bytes (${{ steps.normal.outputs.progmem-percentage }}%) of program storage space. Maximum is ${{ steps.normal.outputs.progmem-total }} bytes."
+          echo "Global variables use ${{ steps.normal.outputs.ram-bytes }} bytes (${{ steps.normal.outputs.ram-percentage }}%) of dynamic memory, leaving ${{ steps.normal.outputs.ram-remained }} bytes for local variables. Maximum is ${{ steps.normal.outputs.ram-total }} bytes."
+          echo "progmem-bytes-exceeded = ${{ steps.normal.outputs.progmem-bytes-exceeded }}"
+          echo "progmem-percentage-exceeded = ${{ steps.normal.outputs.progmem-percentage-exceeded }}"
+          echo "ram-bytes-exceeded = ${{ steps.normal.outputs.ram-bytes-exceeded }}"
+          echo "ram-percentage-exceeded = ${{ steps.normal.outputs.ram-percentage-exceeded }}"
+          echo "ram-remained-exceeded = ${{ steps.normal.outputs.ram-remained-exceeded }}"

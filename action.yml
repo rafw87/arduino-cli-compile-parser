@@ -1,0 +1,49 @@
+name: 'Arduino CLI compilation result parser'
+description: 'Parses compilation result from Arduino CLI and extracts program and ram memory usage.'
+inputs:
+  compile-log:
+    description: Log from `arduino-cli compile`
+    required: true
+  progmem-bytes-treshold:
+    description: Treshold for program memory bytes. Its exceeding will be indicated by progmem-bytes-excedded='1'
+    required: false
+  progmem-percentage-treshold:
+    description: Treshold for program memory percentage. Its exceeding will be indicated by progmem-percentage-excedded='1'
+    required: false
+  ram-bytes-treshold:
+    description: Treshold for RAM bytes. Its exceeding will be indicated by ram-bytes-excedded='1'
+    required: false
+  ram-percentage-treshold:
+    description: Treshold for RAM percentage. Its exceeding will be indicated by ram-percentage-excedded='1'
+    required: false
+  ram-remained-treshold:
+    description: Treshold for remained RAM. Its exceeding (going below) will be indicated by ram-remained-excedded='1'
+    required: false
+outputs:
+  progmem-bytes:
+    description: Number of program memory bytes as reported by arduino-cli.
+  progmem-bytes-exceeded:
+    description: Value '1' indicates that progmem-bytes-treshold has been exceeded.
+  progmem-percentage:
+    description: Percentage of program memory used as reported by arduino-cli.
+  progmem-percentage-exceeded:
+    description: Value '1' indicates that progmem-percentage-treshold has been exceeded.
+  progmem-total:
+    description: Total program memory used as reported by arduino-cli.
+  ram-bytes:
+    description: Number of dynamic memory bytes as reported by arduino-cli.
+  ram-bytes-exceeded:
+    description: Value '1' indicates that ram-bytes-treshold has been exceeded.
+  ram-percentage:
+    description: Percentage of dynamic memory used as reported by arduino-cli.
+  ram-percentage-exceeded:
+    description: Value '1' indicates that ram-percentage-treshold has been exceeded.
+  ram-remained:
+    description: Bytes of remained dynamic memory as reported by arduino-cli.
+  ram-remained-exceeded:
+    description: Value '1' indicates that ram-remained-treshold has been exceeded.
+  ram-total:
+    description: Total dynamic memory used as reported by arduino-cli.
+runs:
+  using: 'node12'
+  main: 'index.js'

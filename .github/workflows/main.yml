@@ -18,7 +18,6 @@ jobs:
 
       - name: Regenerate compile output using outputs
         run: |
-          echo "The time was ${{ steps.normal.outputs.time }}"
           echo "Sketch uses ${{ steps.normal.outputs.progmem-bytes }} bytes (${{ steps.normal.outputs.progmem-percentage }}%) of program storage space. Maximum is ${{ steps.normal.outputs.progmem-total }} bytes."
           echo "Global variables use ${{ steps.normal.outputs.ram-bytes }} bytes (${{ steps.normal.outputs.ram-percentage }}%) of dynamic memory, leaving ${{ steps.normal.outputs.ram-remained }} bytes for local variables. Maximum is ${{ steps.normal.outputs.ram-total }} bytes."
           echo "progmem-bytes-exceeded = ${{ steps.normal.outputs.progmem-bytes-exceeded }}"
@@ -26,3 +25,47 @@ jobs:
           echo "ram-bytes-exceeded = ${{ steps.normal.outputs.ram-bytes-exceeded }}"
           echo "ram-percentage-exceeded = ${{ steps.normal.outputs.ram-percentage-exceeded }}"
           echo "ram-remained-exceeded = ${{ steps.normal.outputs.ram-remained-exceeded }}"
+
+
+      - name: Program memory exceeded
+        id: progmem_exceeded
+#        uses: rafw87/arduino-cli-compile-parser@v1
+        uses: ./
+        with:
+          compile-log: |
+            Error during build: text section exceeds available space in board
+            Sketch uses 33316 bytes (103%) of program storage space. Maximum is 32256 bytes. Global variables use 1656 bytes (80%) of dynamic memory, leaving 392 bytes for local variables. Maximum is 2048 bytes. Sketch too big; see http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing it.
+          progmem-percentage-treshold: "95"
+          ram-percentage-treshold: "75"
+
+      - name: Regenerate compile output using outputs
+        run: |
+          echo "Sketch uses ${{ steps.progmem_exceeded.outputs.progmem-bytes }} bytes (${{ steps.progmem_exceeded.outputs.progmem-percentage }}%) of program storage space. Maximum is ${{ steps.progmem_exceeded.outputs.progmem-total }} bytes."
+          echo "Global variables use ${{ steps.progmem_exceeded.outputs.ram-bytes }} bytes (${{ steps.progmem_exceeded.outputs.ram-percentage }}%) of dynamic memory, leaving ${{ steps.progmem_exceeded.outputs.ram-remained }} bytes for local variables. Maximum is ${{ steps.progmem_exceeded.outputs.ram-total }} bytes."
+          echo "progmem-bytes-exceeded = ${{ steps.progmem_exceeded.outputs.progmem-bytes-exceeded }}"
+          echo "progmem-percentage-exceeded = ${{ steps.progmem_exceeded.outputs.progmem-percentage-exceeded }}"
+          echo "ram-bytes-exceeded = ${{ steps.progmem_exceeded.outputs.ram-bytes-exceeded }}"
+          echo "ram-percentage-exceeded = ${{ steps.progmem_exceeded.outputs.ram-percentage-exceeded }}"
+          echo "ram-remained-exceeded = ${{ steps.progmem_exceeded.outputs.ram-remained-exceeded }}"
+
+
+      - name: RAM exceeded
+        id: ram_exceeded
+#        uses: rafw87/arduino-cli-compile-parser@v1
+        uses: ./
+        with:
+          compile-log: |
+            Error during build: data section exceeds available space in board
+            Sketch uses 30526 bytes (94%) of program storage space. Maximum is 32256 bytes. Global variables use 5188 bytes (253%) of dynamic memory, leaving -3140 bytes for local variables. Maximum is 2048 bytes. Not enough memory; see http://www.arduino.cc/en/Guide/Troubleshooting#size for tips on reducing your footprint.
+          progmem-percentage-treshold: "95"
+          ram-percentage-treshold: "75"
+
+      - name: Regenerate compile output using outputs
+        run: |
+          echo "Sketch uses ${{ steps.ram_exceeded.outputs.progmem-bytes }} bytes (${{ steps.ram_exceeded.outputs.progmem-percentage }}%) of program storage space. Maximum is ${{ steps.ram_exceeded.outputs.progmem-total }} bytes."
+          echo "Global variables use ${{ steps.ram_exceeded.outputs.ram-bytes }} bytes (${{ steps.ram_exceeded.outputs.ram-percentage }}%) of dynamic memory, leaving ${{ steps.ram_exceeded.outputs.ram-remained }} bytes for local variables. Maximum is ${{ steps.ram_exceeded.outputs.ram-total }} bytes."
+          echo "progmem-bytes-exceeded = ${{ steps.ram_exceeded.outputs.progmem-bytes-exceeded }}"
+          echo "progmem-percentage-exceeded = ${{ steps.ram_exceeded.outputs.progmem-percentage-exceeded }}"
+          echo "ram-bytes-exceeded = ${{ steps.ram_exceeded.outputs.ram-bytes-exceeded }}"
+          echo "ram-percentage-exceeded = ${{ steps.ram_exceeded.outputs.ram-percentage-exceeded }}"
+          echo "ram-remained-exceeded = ${{ steps.ram_exceeded.outputs.ram-remained-exceeded }}"
